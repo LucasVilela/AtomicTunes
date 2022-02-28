@@ -1,61 +1,65 @@
-/* eslint-disable @next/next/no-img-element */
 import type { NextPage } from 'next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+
 import AlbumListView from '../components/AlbumListView'
-
+import Input from '../components/Input'
 import Layout from '../components/Layout'
-import { api } from '../services/api'
+import LoadingSpinner from '../components/LoadingSpinner'
+import { itunesApi } from '../services/api'
 
-type AlbumResponse = {
+export type AlbumResponseType = {
+  artistName: string
+  artistViewUrl: string
+  artworkUrl100: string
+  collectionId: string
   collectionName: string
   releaseDate: Date
-  artworkUrl100: string
-  artistName: string
-  artistId: string
-  collectionId: string
+  trackId: string
+  trackName: string
+  trackTimeMillis: number
+  wrapperType: "track" | "collection"
 }
 
 type ApiResponse = {
   data: {
-    results: AlbumResponse[]
+    results: AlbumResponseType[]
   }
 }
 
-
 const Home: NextPage = () => {
-  const [albums, setAlbums] = useState<AlbumResponse[]>([])
+  const [albums, setAlbums] = useState<AlbumResponseType[]>([])
+  const [status, setStatus] = useState<"loading" | "empty" | "done" | "initial">("initial")
 
   async function getAlbum(artistName: string) {
     const searchTerm = artistName.replace(' ', '+')
     try {
-      const albums: ApiResponse = await api.get(`/search?term=${searchTerm}}&entity=album&country=US`)
-      setAlbums(albums.data.results)
-
+      const albums: ApiResponse = await itunesApi.get(`/search?term=${searchTerm}&entity=album&country=US`)
+      setAlbums(albums.data.results.filter(item => item.wrapperType === 'collection'))
+      setStatus("done")
     } catch (e) {
       console.error(e)
+      setStatus("empty")
     }
   }
 
-
-  console.log('data :>> ', albums);
+  const onSearch = (artistName: string) => {
+    if (artistName) {
+      setStatus("loading")
+      getAlbum(artistName)
+    }
+  }
 
   return (
-    <div>
-      <Layout>
-        <h1>Search for album</h1>
-        <form
-          onSubmit={(e: React.SyntheticEvent) => {
-            e.preventDefault()
-            const artistName = (e.target as HTMLFormElement).elements.artistName.value
-            getAlbum(artistName)
-          }}
-        >
-          <input type="text" name="artistName" />
-          <button type="submit">Search</button>
-        </form>
-
-        <ul>
-          {albums?.map((item, index) => (
+    <Layout>
+      <main className='AlbumSearch'>
+        <div className='SearchSection'>
+          <h1 className='title'>Atomic tunes</h1>
+          <Input onSearch={onSearch} placeholder="Search for artist or album" />
+        </div>
+        <div className='ListView'>
+          {status === "loading" && <LoadingSpinner />}
+          {status === "empty" && <p>Sorry we could&rsquo;t find any album for this artist</p>}
+          {status === "done" && albums?.map((item, index) => (
             <AlbumListView
               key={`item.collectionName-${index}`}
               collectionName={item.collectionName}
@@ -64,10 +68,9 @@ const Home: NextPage = () => {
               collectionId={item.collectionId}
             />
           ))}
-        </ul>
-
-      </Layout>
-    </div>
+        </div>
+      </main>
+    </Layout>
   )
 }
 
