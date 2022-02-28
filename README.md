@@ -7,10 +7,10 @@ Simple app for finding albums using the iTunes API.
 Install node_modules
 
 ```
-npm install
+yarn
 ```
 
 Run the app
 ```
-$ yarn dev 
+yarn dev 
 ```
