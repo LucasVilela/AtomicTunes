@@ -36,12 +36,7 @@ const Home: NextPage = () => {
     const searchTerm = artistName.replace(' ', '+');
     try {
       const albums: ApiResponse = await itunesApi.get(
-        `search?term=${searchTerm}&entity=album&country=US`, {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-          }
-      }
+        `search?term=${searchTerm}&entity=album&country=US`
       );
       setAlbums(
         albums.data.results.filter((item) => item.wrapperType === 'collection')
