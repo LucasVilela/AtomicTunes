@@ -9,6 +9,7 @@ import { AlbumResponseType } from '..';
 import Layout from '../../components/Layout';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Link from 'next/link';
+import { config } from 'process';
 
 type ApiResponse = {
   data: {
@@ -27,8 +28,13 @@ const Album: NextPage = () => {
   async function getSongs(albumId: string) {
     try {
       const query: ApiResponse = await itunesApi.get(
-        `lookup?country=US&entity=song&id=${albumId}`
-      );
+        `lookup?country=US&entity=song&id=${albumId}`, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        }
+      }
+      )
       setData(
         query.data.results.filter((item) => item.wrapperType === 'track')
       );
