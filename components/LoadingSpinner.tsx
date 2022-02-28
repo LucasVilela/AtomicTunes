@@ -1,9 +1,11 @@
-import React from 'react'
+import React from 'react';
 
 const LoadingSpinner = () => {
-  return (
-    <div className="lds-circle"><div></div></div>
-  )
-}
+	return (
+		<div className="lds-circle">
+			<div></div>
+		</div>
+	);
+};
 
-export default LoadingSpinner
+export default LoadingSpinner;

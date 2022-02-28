@@ -1,5 +1,5 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export const itunesApi = axios.create({
-  baseURL: 'https://itunes.apple.com/'
-})
+	baseURL: 'https://itunes.apple.com/',
+});

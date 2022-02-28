@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"**/*.{tsx,scss}\""
   },
   "dependencies": {
     "axios": "^0.26.0",
@@ -21,6 +22,7 @@
     "@types/react": "17.0.39",
     "eslint": "8.10.0",
     "eslint-config-next": "12.1.0",
-    "typescript": "4.5.5"
+    "typescript": "4.5.5",
+    "prettier": "^2.5.1"
   }
 }
